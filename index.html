@@ -23,6 +23,10 @@
   --board:#1d2622;
   --chalk:#f1efe6;
   --chalk-dim:#bfc6bf;
+  --glow-green:rgba(36,70,58,.16);
+  --glow-red:rgba(178,58,38,.11);
+  --glow-honey:rgba(214,160,60,.16);
+  --grain-opacity:.05;
   --f-display:"Young Serif", Georgia, "Times New Roman", serif;
   --f-body:"Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
   --f-chalk:"Caveat", "Comic Sans MS", cursive;
@@ -32,19 +36,31 @@
   :root:not([data-theme="light"]){
     --bg:#141917; --paper:#1b211e; --ink:#ece8de; --muted:#a3aca5; --line:#333c37;
     --accent:#e2765f; --green:#8fc2aa; --board:#0f1412; --chalk:#f1efe6; --chalk-dim:#a9b1aa;
+    --glow-green:rgba(80,150,120,.20); --glow-red:rgba(200,80,60,.13); --glow-honey:rgba(200,150,70,.09); --grain-opacity:.07;
     color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
   --bg:#141917; --paper:#1b211e; --ink:#ece8de; --muted:#a3aca5; --line:#333c37;
   --accent:#e2765f; --green:#8fc2aa; --board:#0f1412; --chalk:#f1efe6; --chalk-dim:#a9b1aa;
+  --glow-green:rgba(80,150,120,.20); --glow-red:rgba(200,80,60,.13); --glow-honey:rgba(200,150,70,.09); --grain-opacity:.07;
   color-scheme:dark;
 }
 
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
-body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55}
+body{background-color:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55;
+  background-image:
+    radial-gradient(55vw 45vw at 8% 4%, var(--glow-honey), transparent 70%),
+    radial-gradient(50vw 40vw at 95% 18%, var(--glow-green), transparent 70%),
+    radial-gradient(60vw 45vw at 85% 70%, var(--glow-red), transparent 70%),
+    radial-gradient(55vw 50vw at 0% 95%, var(--glow-green), transparent 70%);
+  background-attachment:fixed;background-repeat:no-repeat}
+/* paper grain over the whole page */
+body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:var(--grain-opacity);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+main,footer{position:relative}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
 .wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 h1,h2,h3{font-family:var(--f-display);font-weight:400;text-wrap:balance;margin:0}
@@ -53,6 +69,9 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
 
 /* Header */
 header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);border-bottom:1px solid var(--line)}
+@supports (backdrop-filter: blur(8px)) or (-webkit-backdrop-filter: blur(8px)){
+  header.top{background:color-mix(in srgb, var(--paper) 78%, transparent);-webkit-backdrop-filter:blur(12px) saturate(1.2);backdrop-filter:blur(12px) saturate(1.2)}
+}
 header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:12px;flex-wrap:wrap}
 .brand{display:flex;align-items:baseline;gap:8px;text-decoration:none}
 .brand small{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600}
@@ -90,7 +109,8 @@ nav.menu-nav a:hover{background:var(--bg);color:var(--ink)}
 .board .beer span:last-child{font-family:var(--f-chalk);font-size:30px;letter-spacing:0;text-transform:none}
 
 /* Menu */
-.menu{padding-block:24px 72px}
+.menu{padding-block:24px 72px;scroll-margin-top:60px}
+.contact{scroll-margin-top:60px}
 .menu-head{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;border-bottom:2px solid var(--ink);padding-bottom:14px;margin-bottom:8px}
 .menu-head h2{font-size:clamp(32px,4.5vw,44px)}
 .menu-head p{margin:0;color:var(--muted);font-size:14px}
@@ -112,7 +132,7 @@ section.cat.wide{grid-column:2;grid-row:1 / span 2}
 .tag{display:inline-block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--accent);border:1px solid currentColor;border-radius:999px;padding:1px 8px;margin-left:8px;vertical-align:2px}
 
 /* Desserts & drinks strip */
-.extras{background:var(--paper);border-block:1px solid var(--line)}
+.extras{background:color-mix(in srgb, var(--paper) 65%, transparent);border-block:1px solid var(--line)}
 .extras .wrap{padding-block:40px;display:grid;grid-template-columns:repeat(3,1fr);gap:32px}
 .extra{min-width:0}
 .extra .k{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--muted)}
@@ -151,6 +171,45 @@ footer b{font-family:var(--f-display);font-weight:400;color:var(--green);font-si
   nav.menu-nav{width:100%}
   nav.menu-nav a{padding:6px 10px}
 }
+/* Motion: hover states + nav highlight (always), entrance animations (only when motion is allowed) */
+nav.menu-nav a{transition:background .2s,color .2s}
+nav.menu-nav a.active{background:var(--bg);color:var(--green)}
+.btn{transition:transform .2s ease,filter .2s ease,box-shadow .2s ease}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 18px -10px var(--green)}
+.board h2{display:inline-block}
+.board h2::after{content:"";display:block;height:3px;margin-top:6px;border-radius:3px;background:var(--chalk);opacity:.55;transform-origin:left center}
+.dish-row .price,.dish-row .dots{transition:color .25s,border-color .25s}
+.dish:hover .price{color:var(--accent)}
+.dish:hover .dots{border-color:var(--accent)}
+.dish .name{transition:color .25s}
+.dish:hover .name{color:var(--green)}
+
+@media (prefers-reduced-motion: no-preference){
+  .board{transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+  @media (min-width:821px){.board:hover{transform:rotate(0deg) translateY(-4px)}}
+
+  .hero-text > *{animation:rise .7s cubic-bezier(.2,.7,.2,1) backwards}
+  .hero-text > :nth-child(2){animation-delay:.08s}
+  .hero-text > :nth-child(3){animation-delay:.16s}
+  .hero-text > :nth-child(4){animation-delay:.24s}
+  .board{animation:board-in .8s .2s cubic-bezier(.2,.7,.2,1) backwards}
+  .board h2::after{animation:draw .6s .6s ease-out backwards}
+  .board li,.board .beer{animation:chalk .5s ease-out backwards}
+  .board li:nth-child(1){animation-delay:.8s}
+  .board li:nth-child(2){animation-delay:.95s}
+  .board li:nth-child(3){animation-delay:1.1s}
+  .board li:nth-child(4){animation-delay:1.25s}
+  .board .beer{animation-delay:1.45s}
+
+  @supports (animation-timeline: view()){
+    .menu-head,.cat h3,.dish,.extra,.c-item,.contact h2,.contact .intro{
+      animation:rise linear both;animation-timeline:view();animation-range:entry 0% entry 70%}
+  }
+}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}}
+@keyframes board-in{from{opacity:0;transform:rotate(-4deg) translateY(28px) scale(.97)}}
+@keyframes chalk{from{opacity:0;transform:translateX(-8px);filter:blur(2px)}}
+@keyframes draw{from{transform:scaleX(0)}}
 </style>
 
 </head>
@@ -160,9 +219,7 @@ footer b{font-family:var(--f-display);font-weight:400;color:var(--green);font-si
     <a class="brand" href="#top"><small>Restauracja</small><b>NOWA</b></a>
     <nav class="menu-nav" aria-label="Menu">
       <a href="#polecamy">Polecamy</a>
-      <a href="#wolowina">Wołowina</a>
-      <a href="#drob">Drób</a>
-      <a href="#wieprzowina">Wieprzowina</a>
+      <a href="#menu">Dania główne</a>
       <a href="#kontakt">Kontakt</a>
     </nav>
   </div>
@@ -338,6 +395,20 @@ document.getElementById('copy-phone').addEventListener('click', function(){
     navigator.clipboard.writeText(num).then(function(){ done('Skopiowano'); }, fallback);
   } catch(e){ fallback(); }
 });
+
+// Highlight the nav link of the section on screen
+(function(){
+  if (!('IntersectionObserver' in window)) return;
+  var links = {};
+  document.querySelectorAll('nav.menu-nav a').forEach(function(a){ links[a.getAttribute('href').slice(1)] = a; });
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (!e.isIntersecting) return;
+      Object.keys(links).forEach(function(id){ links[id].classList.toggle('active', id === e.target.id); });
+    });
+  }, {rootMargin:'-45% 0px -50% 0px'});
+  Object.keys(links).forEach(function(id){ var el = document.getElementById(id); if (el) io.observe(el); });
+})();
 </script>
 
 </body>
